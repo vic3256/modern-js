@@ -3,6 +3,7 @@ import webpack from 'webpack';
 import chalk from 'chalk';
 import rimraf from 'rimraf';
 import {create as createServerConfig} from './webpack.server';
+import {create as createClientConfig} from './webpack.client';
  
 // this var will now have all the packages starting with 'gulp-'
 // so you dont have to load all gulp plugins individually
@@ -19,10 +20,23 @@ gulp.task('dev:server', gulp.series('clean:server', devServerBuild));
 gulp.task('dev', gulp.series('clean', devServerBuild, gulp.parallel(devServerWatch, devServerReload)));
 
 gulp.task('prod:server', gulp.series('clean:server', prodServerBuild));
+gulp.task('prod:client', gulp.series('clean:client', prodClientBuild));
+gulp.task('prod', gulp.series('clean', gulp.parallel(prodServerBuild, prodClientBuild)));
+
+
+// private client tasks
+function prodClientBuild(callback) {
+	const compiler = webpack(createClientConfig(false));
+	compiler.run((error, stats) => {
+		outputWebpack('Prod:Client', error, stats);
+		callback();
+	});
+}
 
 
 // private server tasks
 const devServerWebpack = webpack(createServerConfig(true));
+const prodServerWebpack = webpack(createServerConfig(false));
 
 function devServerBuild(callback) {
 	devServerWebpack.run((error, stats) => {
@@ -49,11 +63,10 @@ function devServerReload() {
 }
 
 function prodServerBuild(callback) {
-	const prodServerWebpack = webpack(createServerConfig(false));
 	prodServerWebpack.run((error, stats) => {
 		outputWebpack('Prod:Server', error, stats);
 		callback();
-	})
+	});
 }
 
 

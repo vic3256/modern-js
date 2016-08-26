@@ -1,5 +1,8 @@
 var path = require('path');
+var webpack = require('webpack');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
+const vendorModules = ['jquery','lodash'];
 
 // not using __dirname in this file because of an oddity when using webpack hot middlewareon the server
 // to provide our build assets for end development. Oddity of how __dirname gets compiled by webpack
@@ -10,19 +13,30 @@ function createConfig(isDebug) {
 
 	// use eval-source-map for development - super fast
 	// use source-map for production - slower but production ready
-	const devTool = isDebug ? 'eval-source-map' : 'source-map';
-	const plugins = [];
+	const devtool = isDebug ? 'eval-source-map' : 'source-map';
+	const plugins = [new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.js')];
 
 	// combine loaders with '!' (creating pipeline right to left)
 	const cssLoader = {test: /\.css$/, loader: 'style!css'};
 	const sassLoader = {test: /\.scss$/, loader: 'style!css!sass'};
 	const appEntry = ['./src/client/application.js'];
 
+	if(!isDebug) {
+		plugins.push(new webpack.optimize.UglifyJsPlugin());
+		plugins.push(new ExtractTextPlugin('[name].css'));
+
+		// extract css into text
+		cssLoader.loader = ExtractTextPlugin.extract('style', 'css');
+		sassLoader.loader = ExtractTextPlugin.extract('style', 'css!sass');
+	}
+
 	return {
-		devTool: devTool,
+		devtool: devtool,
 		// pass object to have multiple entry files
 		entry: {
-			application: appEntry
+			application: appEntry,
+			// separate vendor modules
+			vendor: vendorModules
 		},
 		output: {
 			path: path.join(dirname, 'public', 'build'),
@@ -35,15 +49,18 @@ function createConfig(isDebug) {
 				shared: path.join(dirname, 'src', 'shared')
 			}
 		},
-		loaders: [
-			{ test: /\.js$/, loader: 'babel', exclude: /node_modules/ },
-			{ test: /\.js$/, loader: 'eslint', exclude: /node_modules/ },
-			// if find any of these extensions use the url loader - limit 512b
-			// allow us to load these as straight up files or url encoded files
-			{ test: /\.(png|jpg|jpeg|gif|woff|ttf|eot|svg|woff2)/, loader: 'url-loader?limit=512' },
-			cssLoader,
-			sassLoader
-		]
+		module: {
+			loaders: [
+				{ test: /\.js$/, loader: 'babel', exclude: /node_modules/ },
+				{ test: /\.js$/, loader: 'eslint', exclude: /node_modules/ },
+				// if find any of these extensions use the url loader - limit 512b
+				// allow us to load these as straight up files or url encoded files right into css
+				{ test: /\.(png|jpg|jpeg|gif|woff|ttf|eot|svg|woff2)/, loader: 'url-loader?limit=100' },
+				cssLoader,
+				sassLoader
+			]
+		},
+		plugins: plugins
 	};
 
 }
