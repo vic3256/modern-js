@@ -28,6 +28,9 @@ function createConfig(isDebug) {
 		// extract css into text
 		cssLoader.loader = ExtractTextPlugin.extract('style', 'css');
 		sassLoader.loader = ExtractTextPlugin.extract('style', 'css!sass');
+	} else {
+		plugins.push(new webpack.HotModuleReplacementPlugin());
+		appEntry.splice(0,0, 'webpack-hot-middleware/client');
 	}
 
 	return {

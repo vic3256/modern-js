@@ -1,1 +1,3 @@
 node_modules/.bin/webpack --config ./webpack.server
+
+node_modules\.bin\webpack --config ./webpack.server

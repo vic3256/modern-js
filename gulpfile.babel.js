@@ -11,7 +11,7 @@ import {create as createClientConfig} from './webpack.client';
 const $ = require('gulp-load-plugins')();
 
 
-// public tasks
+//============================= public tasks
 gulp.task('clean:server', cb => rimraf('./build', cb));
 gulp.task('clean:client', cb => rimraf('./public/build', cb));
 gulp.task('clean', gulp.parallel('clean:server', 'clean:client'));
@@ -24,7 +24,7 @@ gulp.task('prod:client', gulp.series('clean:client', prodClientBuild));
 gulp.task('prod', gulp.series('clean', gulp.parallel(prodServerBuild, prodClientBuild)));
 
 
-// private client tasks
+//============================= private client tasks
 function prodClientBuild(callback) {
 	const compiler = webpack(createClientConfig(false));
 	compiler.run((error, stats) => {
@@ -34,7 +34,7 @@ function prodClientBuild(callback) {
 }
 
 
-// private server tasks
+//============================= private server tasks
 const devServerWebpack = webpack(createServerConfig(true));
 const prodServerWebpack = webpack(createServerConfig(false));
 
@@ -70,7 +70,7 @@ function prodServerBuild(callback) {
 }
 
 
-// helpers
+//============================= helpers
 function outputWebpack(label, error, stats) {
 	if(error) throw new Error(error);
 
