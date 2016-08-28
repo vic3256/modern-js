@@ -1,0 +1,106 @@
+// pulling f-a from node_modules with '~' cool!
+// sass loader does not always resolve correctly
+// this variable is from node_modules>font-awesome>scss>_path.scss
+$fa-font-path: '~font-awesome/fonts';
+@import '~font-awesome/scss/font-awesome';
+@import './styles/variables';
+
+::selection { background: $border-panel; color: $color-info; }
+::-moz-selection { background: $border-panel; color: $color-info; }
+
+::-webkit-scrollbar {
+	width: 5px;
+	height: 5px;
+	background: darken($background, 3%);
+}
+
+::-webkit-scrollbar-corner { background: #000; }
+
+::-webkit-scrollbar-thumb {
+	background-color: $color-info;
+
+	&:hover {
+		background: lighten($color-info, 20%);
+	}
+}
+
+html,
+body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	background: $background;
+	color: $color;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 16px;
+}
+
+.site-wrap {
+	border-bottom: 5px solid $border-panel;
+	box-sizing: border-box;
+	display: flex;
+	height: 100%;
+
+	> .column {
+		display: flex;
+		flex-direction: column;
+		flex-grow: 1;
+
+		&.left {
+			flex-grow: 0;
+			flex-shrink: 0;
+			width: 200px;
+
+			> section {
+				border-right: 5px solid $border-panel;
+			}
+		}
+
+		&.right {
+			flex-grow: 0;
+			flex-shrink: 0;
+			width: 200px;
+
+			> section {
+				border-left: 5px solid $border-panel;
+			}
+		}
+
+		&.center {
+			flex-grow: 1;
+		}
+	}
+}
+
+.column > section {
+	background: $background-panel;
+	flex-grow: 1;
+	overflow: hidden;
+
+	> h1 {
+		background: $border-panel;
+		border-bottom: 2px solid darken($background, 5%);
+		padding: 5px;
+		margin: 0;
+		font-weight: normal;
+		color: lighten($color, 10%);
+		font-size: 14px;
+		text-transform: lowercase;
+		flex-shrink: 0;
+		display: flex;
+
+		.info {
+			margin-left: auto;
+			font-size: 13px;
+			color: darken($color, 15%);
+			align-self: flex-end;
+		}
+	}
+}
+
+i {
+	color: $color-highlight;
+}
