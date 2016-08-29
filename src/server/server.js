@@ -4,6 +4,7 @@ import express from 'express';
 import http from 'http';
 import socketIo from 'socket.io';
 import chalk from 'chalk';
+import {Observable} from 'rxjs';
 
 import {ObservableSocket} from 'shared/observable-socket';
 
@@ -68,14 +69,7 @@ io.on('connection', socket => {
 
 	const client = new ObservableSocket(socket);
 	client.onAction('login', creds => {
-		return database
-			.find$('user', {username: creds.username})
-			.flatmap(user => {
-				if(!user || user.password != creds.password)
-					return Observable.trow('User not found.');
-
-				return Observable.of(user);
-			});
+		return Observable.of(`USER: ${creds.username}`).delay(3000);
 	});
 });
 
@@ -84,6 +78,7 @@ const port = process.env.PORT || 3000;
 
 function startServer() {
 	server.listen(port, () => {
+
 		console.log(`Started http server on ${port}`);
 	});
 }

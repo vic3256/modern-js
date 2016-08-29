@@ -1,4 +1,10 @@
-import {Observable} from 'rxjs';
+import {Observable, ReplaySubject} from 'rxjs';
+
+export function clientMessage(message) {
+	const error = new Error(message);
+	error.clientMessage = message;
+	return error;
+}
 
 export class ObservableSocket {
 
@@ -9,10 +15,13 @@ export class ObservableSocket {
 	constructor(socket) {
 		this._socket = socket;
 		this._state = {};
+		this._actionCallbacks = {};
+		this._requests = {};
+		this._nextRequestId = 0;
 
 		this.status$ = Observable.merge(
 			// observable event hendlers on socket.io
-			// merging multiple Observable sequences into one with map -> map to new state object
+			// merging multiple Observable sequences into one with merge -> map to new state object
 			this.on$('connect').map(() => ({ isConnected: true })),
 			this.on$('disconnect').map(() => ({ isConnected: false })),
 			this.on$('reconnecting').map(attempt => ({ isConnected: false, isReconnecting: true, attempt })),
@@ -44,11 +53,103 @@ export class ObservableSocket {
 		this._socket.emit(event, arg);
 	}
 
+	// Emit - client side
 	emitAction$(action, arg) {
-		return Observable.empty();
+		const id = this._nextRequestId++;
+		this._registerCallbacks(action);
+
+		const subject = this._requests[id] = new ReplaySubject(1);
+		this._socket.emit(action, arg, id);
+		return subject;
 	}
 
+	// responsible for registering the success/failure callbacks on the socket
+	// when server sends back a response do something with it
+	_registerCallbacks(action) {
+		if(this._actionCallbacks.hasOwnProperty(action))
+			return;
+
+		this._socket.on(action, (arg, id) => {
+			const request = this._popRequest(id);
+			if(!request) return;
+
+			// 'request' methods are returned from rxjs Observable subjects returned from emitAction$
+			request.next(arg);
+			request.complete();
+		});
+
+		this._socket.on(`${action}:fail`, (arg, id) => {
+			const request = this._popRequest(id);
+			if(!request) return;
+
+			request.error(arg);
+		});
+
+		this._actionCallbacks[action] = true;
+	}
+
+	// server sends response with unknown request id
+	_popRequest(id) {
+		// show error
+		if(!this._requests.hasOwnProperty(id)) {
+			console.error(`Event with ${id} was returned twice, or the server did not send back an ID!`);
+			return;
+		}
+
+		// delete request id that was not initiated by server
+		const request = this._requests[id];
+		delete this._requests[id];
+		return request;
+	}
+
+	// On - server side
 	onAction(action, callback) {
-		
+		this._socket.on(action, (arg, requestId) => {
+			try {
+				const value = callback(arg);
+				// if no value tell the client request is complete, send null value and request id
+				if(!value) {
+					this._socket.emit(action, null, requestId);
+					return;
+				}
+
+				if(typeof(value.subscribe) !== 'function') {
+					this._socket.emit(action, value, requestId);
+					return;
+				}
+
+				let hasValue = false;
+				value.subscribe({
+					next: (item) => {
+						if(hasValue)
+							throw new Error(`Action ${action} produced more than one value`);
+
+						this._socket.emit(action, item, requestId);
+						hasValue = true;
+					},
+
+					error: (error) => {
+						this._emitError(action, requestId, error);
+						console.error(error.stack || error);
+					},
+
+					complete: () => {
+						if(!hasValue)
+							this._socket.emit(action, null, requestId);
+					}
+				});
+			}
+			catch (error) {
+				if(typeof(requestId) !== 'undefined')
+					this._emitError(action, requestId, error);
+
+				console.error(error.stack || error);
+			}
+		});
+	}
+
+	_emitError(action, id, error) {
+		const message = (error && error.clientMessage || 'Fatal Error');
+		this._socket.emit(`${action}:fail`, {message}, id);
 	}
 }
