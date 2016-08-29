@@ -2,7 +2,7 @@ var path = require('path');
 var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-const vendorModules = ['jquery','lodash'];
+const vendorModules = ['jquery','lodash', 'socket.io-client', 'rxjs'];
 
 // not using __dirname in this file because of an oddity when using webpack hot middlewareon the server
 // to provide our build assets for end development. Oddity of how __dirname gets compiled by webpack

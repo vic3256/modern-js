@@ -5,6 +5,8 @@ import http from 'http';
 import socketIo from 'socket.io';
 import chalk from 'chalk';
 
+import {ObservableSocket} from 'shared/observable-socket';
+
 // determine if in development - extract node env variable (NODE_ENV) and set to isDevelopment
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -63,6 +65,18 @@ app.get('/', (req, res) => {
 //============================= socket
 io.on('connection', socket => {
 	console.log(`Got connection from ${socket.request.connection.remoteAddress}`);
+
+	const client = new ObservableSocket(socket);
+	client.onAction('login', creds => {
+		return database
+			.find$('user', {username: creds.username})
+			.flatmap(user => {
+				if(!user || user.password != creds.password)
+					return Observable.trow('User not found.');
+
+				return Observable.of(user);
+			});
+	});
 });
 
 //============================= startup
