@@ -15,6 +15,7 @@ services.server.emitAction$('login', {username: 'foo', password: 'bar'})
 //============================= Auth
 
 //============================= Components
+require('./components/player/player');
 
 //============================= Bootstrap
 services.socket.connect();

@@ -53,7 +53,7 @@ export class ObservableSocket {
 		this._socket.emit(event, arg);
 	}
 
-	// Emit - client side
+	//============================= Emit - client side
 	emitAction$(action, arg) {
 		const id = this._nextRequestId++;
 		this._registerCallbacks(action);
@@ -102,7 +102,7 @@ export class ObservableSocket {
 		return request;
 	}
 
-	// On - server side
+	//============================= On - server side
 	onAction(action, callback) {
 		this._socket.on(action, (arg, requestId) => {
 			try {
