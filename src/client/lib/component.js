@@ -4,7 +4,7 @@ export class ComponentBase {
 
 	attach($mount) {
 		// jquery object prefixed with '$'
-		this.$mount = $mount;
+		this._$mount = $mount;
 		this._onDetachHandlers = [];
 		this.children = [];
 		this._onAttach();

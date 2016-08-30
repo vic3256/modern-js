@@ -1,24 +1,25 @@
 import $ from 'jquery';
 import {ElementComponent} from '../../lib/component';
 
-import './player.scss';
+import './users.scss';
 
-class PlayerComponent extends ElementComponent {
+class UsersComponents extends ElementComponent {
 	constructor() {
-		super();
+		super('ul');
+		this.$element.addClass('users');
 	}
 
 	_onAttach() {
-		const $title = this._$mount.find('h1');
-		$title.text('player');
+		const $title = this._$mount.find('> h1');
+		$title.text('Users');
 	}
 }
 
 // hot reload
 let component;
 try {
-	let component = new PlayerComponent();
-	component.attach($('section.player'));
+	component = new UsersComponents();
+	component.attach($('section.users'));
 }
 catch (e) {
 	console.error(e);
