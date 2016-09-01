@@ -17,7 +17,7 @@ class PlaylistComponent extends ComponentBase {
 
 	_onAttach() {
 		const $title = this._$mount.find('> h1');
-		$title.text('');
+		$title.text('Playlist');
 
 		const toolbar = new PlaylistToolbarComponent();
 		toolbar.attach(this._$mount);
@@ -38,9 +38,14 @@ class PlaylistComponent extends ComponentBase {
 	}
 
 	_onDetach() {
+		// removing chrome will also remove scrollArea
 		this._$chrome.remove();
 	}
 }
+
+//
+// 4-26 6:28
+//
 
 // hot reload
 let component;
