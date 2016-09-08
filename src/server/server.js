@@ -83,9 +83,11 @@ io.on('connection', socket => {
 
 	const client = new ObservableSocket(socket);
 
+	// register client with all modules
 	for(let mod of modules)
 		mod.registerClient(client);
 
+	// tell all the modules the client is registered
 	for(let mod of modules)
 		mod.clientRegistered(client);
 
@@ -112,5 +114,3 @@ Observable.merge(...modules.map(m => m.init$()))
 			console.log(`Could not init module: ${error.stack || error}`);
 		}
 	});
-
-// startServer();

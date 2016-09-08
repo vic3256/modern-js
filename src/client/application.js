@@ -22,3 +22,7 @@ require('./components/playlist/playlist');
 
 //============================= Bootstrap
 services.socket.connect();
+
+
+services.server.emitAction('users:list')
+	.subscribe(users => console.log(users);)

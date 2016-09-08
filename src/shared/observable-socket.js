@@ -148,6 +148,15 @@ export class ObservableSocket {
 		});
 	}
 
+	onActions(actions) {
+		for(let action in actions) {
+			if(!actions.hasOwnProperty(action))
+				continue;
+
+			this.onAction(action, actions[action]);
+		}
+	}
+
 	_emitError(action, id, error) {
 		const message = (error && error.clientMessage || 'Fatal Error');
 		this._socket.emit(`${action}:fail`, {message}, id);
