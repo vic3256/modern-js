@@ -1,5 +1,14 @@
 import $ from 'jquery';
 
+import {Observable} from 'rxjs';
+
+// subscribe / unsubscribe components
+Observable.prototype.compSubscribe = function (component, ...args) {
+	let subscription = this.subscribe(...args);
+	component._onDetachHandlers.push(() => subscription.unsubscribe());
+	return subscription;
+};
+
 export class ComponentBase {
 
 	attach($mount) {
