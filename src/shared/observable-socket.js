@@ -148,6 +148,7 @@ export class ObservableSocket {
 		});
 	}
 
+	// register multiple actions with same object
 	onActions(actions) {
 		for(let action in actions) {
 			if(!actions.hasOwnProperty(action))
