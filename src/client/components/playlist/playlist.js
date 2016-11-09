@@ -43,10 +43,6 @@ class PlaylistComponent extends ComponentBase {
 	}
 }
 
-//
-// 4-26 6:28
-//
-
 // hot reload
 let component;
 try {

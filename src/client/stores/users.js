@@ -13,7 +13,7 @@ export class UsersStore {
 			this._server.on$('users:added').map(opAdd));
 
 		this.state$ = events$
-			// scan - reduce for observable
+			// scan - reduce for observable - take the last iteam and current operation
 			.scan(function (last, op) {
 				return op(last.state);
 			}, {state: dafeaultStore})
