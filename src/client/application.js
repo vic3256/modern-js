@@ -1,3 +1,6 @@
+// importing but not capturing variables, executing file which adds itself to the Observable prototype
+import 'shared/operators';
+
 import './application.scss';
 
 // take all the exports from that module with '*'
@@ -23,7 +26,7 @@ require('./components/playlist/playlist');
 //============================= Bootstrap
 services.socket.connect();
 
-
-// services.usersStore.state$.subscribe(state => {
-// 	console.log(state);
-// });
+services.usersStore.login$('whoa')
+	.subscribe(user => {
+		console.log(user);
+	});

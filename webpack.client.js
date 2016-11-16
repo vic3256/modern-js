@@ -4,7 +4,7 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const vendorModules = ['jquery','lodash', 'socket.io-client', 'rxjs'];
 
-// not using __dirname in this file because of an oddity when using webpack hot middlewareon the server
+// not using __dirname in this file because of an oddity when using webpack hot middleware on the server
 // to provide our build assets for end development. Oddity of how __dirname gets compiled by webpack
 // this is a workaround where I can resolve the absolute directory to the root path
 // this does not apply when webpack is invoked by gulp or command line only when invoking by the server

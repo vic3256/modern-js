@@ -4,7 +4,7 @@ import {Observable} from 'rxjs';
 
 // subscribe / unsubscribe components
 Observable.prototype.compSubscribe = function (component, ...args) {
-	let subscription = this.subscribe(...args);
+	let subscription = this.safeSubscribe(...args);
 	component._onDetachHandlers.push(() => subscription.unsubscribe());
 	return subscription;
 };

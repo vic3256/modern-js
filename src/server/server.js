@@ -6,6 +6,8 @@ import socketIo from 'socket.io';
 import chalk from 'chalk';
 import {Observable} from 'rxjs';
 
+// importing but not capturing variables, executing file which adds itself to the Observable prototype
+import 'shared/operators';
 import {ObservableSocket} from 'shared/observable-socket';
 
 import {UsersModule} from './modules/users';
