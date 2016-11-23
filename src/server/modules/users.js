@@ -29,7 +29,11 @@ export class UsersModule extends ModuleBase {
 
 	getUserForClient(client) {
 		const auth = client[AuthContext];
-		return auth ? auth : null;
+		if(!auth) {
+			// null will signify no authentication context, not logged in
+			return null;
+		}
+		return auth.isLoggedIn ? auth : null;
 	}
 
 	loginClient$(client, username) {
@@ -62,6 +66,21 @@ export class UsersModule extends ModuleBase {
 		return Observable.of(auth);
 	}
 
+	logoutClient(client) {
+		const auth = this.getUserForClient(client);
+		if(!auth) {
+			return;
+		}
+
+		const index = this._userList.indexOf(auth);
+		this._userList.splice(index, 1);
+		delete this._users[auth.name];
+		delete client[AuthContext];
+
+		this._io.emit("users:removed", auth);
+		console.log(`User ${auth.name} logged out`);
+	}
+
 	registerClient(client) {
 		client.onActions({
 			'users:list': () => {
@@ -73,8 +92,12 @@ export class UsersModule extends ModuleBase {
 			},
 
 			'auth:logout': () => {
-
+				this.logoutClient(client);
 			}
+		});
+
+		client.on('disconnect', () => {
+			this.logoutClient(client);
 		});
 	}
 }
