@@ -1,6 +1,6 @@
 import {Observable} from 'rxjs';
 
-import {validateSendMessage} from 'shared/validators/chat';
+import {validateSendMessage} from 'shared/validation/chat';
 
 export class ChatStore {
 	constructor(server, userStore) {

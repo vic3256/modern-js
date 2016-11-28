@@ -3,7 +3,7 @@ import {ComponentBase} from '../../lib/component';
 
 import './chat.scss';
 
-import {usersStore, chatStore} from '../../services';
+import {usersStore, chatStore, server} from '../../services';
 
 // chat has two element sub components: chat list & chat form (not root level components)
 import {ChatListComponent} from './list';
@@ -11,8 +11,9 @@ import {ChatFormComponent} from './form';
 
 
 class ChatComponent extends ComponentBase {
-	constructor(usersStore, chatStore) {
+	constructor(server, usersStore, chatStore) {
 		super();
+		this._server = server;
 		this._users = usersStore;
 		this._chat = chatStore;
 	}
@@ -21,20 +22,20 @@ class ChatComponent extends ComponentBase {
 		const $title = this._$mount.find('> h1');
 		$title.text('');
 
-		const list = new ChatListComponent();
+		const list = new ChatListComponent(this._server, this._users, this._chat);
 		list.attach(this._$mount);
 		this.children.push(list);
 
 		const form = new ChatFormComponent(this._users, this._chat);
 		form.attach(this._$mount);
-		this.children.push(list);
+		this.children.push(form);
 	}
 }
 
 // hot reload
 let component;
 try {
-	component = new ChatComponent(usersStore);
+	component = new ChatComponent(server, usersStore, chatStore);
 	component.attach($('section.chat'));
 }
 catch (e) {
