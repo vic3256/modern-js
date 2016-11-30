@@ -1,5 +1,6 @@
 // importing but not capturing variables, executing file which adds itself to the Observable prototype
 import $ from "jquery";
+import 'moment-duration-format';
 
 import 'shared/operators';
 

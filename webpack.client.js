@@ -2,7 +2,9 @@ var path = require('path');
 var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-const vendorModules = ['jquery','lodash', 'socket.io-client', 'rxjs', 'moment'];
+// including in the vendor does not execute the script,
+// but it is going to separate the pakages in the vendor js
+const vendorModules = ['jquery','lodash', 'socket.io-client', 'rxjs', 'moment', 'moment-duration-format'];
 
 // not using __dirname in this file because of an oddity when using webpack hot middleware on the server
 // to provide our build assets for end development. Oddity of how __dirname gets compiled by webpack
