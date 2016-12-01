@@ -20,3 +20,16 @@ Observable.prototype.safeSubscribe = function(next, error, complete) {
 Observable.prototype.catchWrap = function () {
 	return this.catch(error => Observable.of({error: error}));
 };
+
+Observable.fromEventNoDefault = function (element, event) {
+	return Observable.fromEvent(element, event)
+		.do(e => e.preventDefault());
+};
+
+Observable.fromPrompt = function (prompText) {
+	return new Observable(observer => {
+		const result = window.prompt(prompText);
+		observer.next(result);
+		observer.complete();
+	});
+};

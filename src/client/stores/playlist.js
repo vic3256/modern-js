@@ -1,5 +1,7 @@
 import {Observable} from 'rxjs';
 
+import {validateAddSource} from 'shared/validation/playlist';
+
 export class PlaylistStore {
 	constructor(server) {
 		const defaultState = {current: null, list: [], map: {}};
@@ -18,6 +20,15 @@ export class PlaylistStore {
 		server.on('connect', () => {
 			server.emit('playlist:list');
 		});
+	}
+
+	addSource$(url) {
+		const validator = validateAddSource(url);
+		if(!validator.isValid) {
+			return Observable.throw({message: validator.message});
+		}
+
+		return this._server.emitAction$('playlist:add', {url});
 	}
 }
 
