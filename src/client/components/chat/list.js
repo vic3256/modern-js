@@ -20,7 +20,7 @@ export class ChatListComponent extends ElementComponent {
 			this._server.status$.map(serverStatusFactory))
 			.filter(m => m)
 			.compSubscribe(this, $newElement => {
-				console.log($newElement);
+				// console.log($newElement);
 				this.$element.append($newElement);
 				this.$element[0].scrollTop = this.$element[0].scrollHeight;
 			});

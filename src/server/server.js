@@ -72,7 +72,7 @@ app.get('/', (req, res) => {
 });
 
 //============================= services
-const videoServices = [new YoutubeService()];
+const videoServices = [new YoutubeService('AIzaSyDC__gQuBbznj19quQ0b9S-TYCLLlxWzcE')];
 const playlistRepository = new FileRepository('./data/playlist.json');
 
 //============================= modules

@@ -96,7 +96,7 @@ section.playlist .playlist-list {
 
 		> .inner {
 			margin: 5px;
-			padding-bottom: 0;
+			padding-bottom: 5px;
 			position: relative;
 			display: flex;
 
@@ -135,6 +135,57 @@ section.playlist .playlist-list {
 
 			.progress {
 				display: none;
+			}
+		}
+
+		&.is-playing {
+			box-shadow: 0 0 5px 2px #000;
+			background: darken($background-panel, 3%);
+			color: $color-highlight;
+
+			> .inner {
+				.thumb-wrapper img {
+					opacity: 1;
+					border: 2px solid $color-info;
+				}
+
+				.details time {
+					color: darken($color-highlight, 10%);
+				}
+
+				&:after, .progress {
+					content: '';
+					display: block;
+					position: absolute;
+					left: 5px;
+					right: 5px;
+					bottom: 0;
+					height: 1px;
+				}
+
+				&:after {
+					z-index: 199;
+					background: darken($background, 5%);
+				}
+
+				.progress {
+					transition: width 100ms;
+					z-index: 200;
+					background: $color-info;
+				}
+			}
+		}
+
+		&.selected {
+			position: relative;
+			z-index: 1;
+			background: lighten($border-panel, 10%);
+			color: $color-highlight;
+
+			> .inner {
+				.thumb-wrapper img {
+					opacity: 1;
+				}
 			}
 		}
 	}
