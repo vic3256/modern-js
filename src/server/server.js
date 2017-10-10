@@ -72,7 +72,8 @@ app.get('/', (req, res) => {
 });
 
 //============================= services
-const videoServices = [new YoutubeService('AIzaSyDC__gQuBbznj19quQ0b9S-TYCLLlxWzcE')];
+// const videoServices = [new YoutubeService('AIzaSyDC__gQuBbznj19quQ0b9S-TYCLLlxWzcE')];
+const videoServices = [new YoutubeService('AIzaSyDI9fsMRaRyM4spzn9T5P-_DtvY1Af3vQs')];
 const playlistRepository = new FileRepository('./data/playlist.json');
 
 //============================= modules
